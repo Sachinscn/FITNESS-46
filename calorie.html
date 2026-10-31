@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0a">
+  <title>Daily Calorie Guide | Fitness 46</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050505;
+      --panel: #111;
+      --panel2: #171717;
+      --line: #2b2b2b;
+      --muted: #aaa;
+      --white: #f5f5f5;
+      --lime: #f04438;
+      --red: #ff5a50;
+      --green: #9be4ae;
+      --blue: #ffaaa3
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 75% 0%, #42110e 0, transparent 36%), var(--bg);
+      color: var(--white);
+      font: 15px/1.55 Arial, sans-serif
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: auto;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .brand {
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: 1.2px
+    }
+
+    .brand b {
+      color: var(--lime)
+    }
+
+    .back {
+      color: #d1d1d1;
+      font-size: 14px
+    }
+
+    .back:hover {
+      color: var(--lime)
+    }
+
+    main {
+      width: min(1120px, calc(100% - 36px));
+      margin: 24px auto 80px
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 30px;
+      padding: 30px 0 36px
+    }
+
+    .eyebrow {
+      color: var(--lime);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 800
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 66px);
+      letter-spacing: -2.8px;
+      line-height: 1.04;
+      margin: 12px 0
+    }
+
+    .hero p {
+      max-width: 650px;
+      color: var(--muted);
+      margin: 0;
+      font-size: 16px
+    }
+
+    .hero-stat {
+      border: 1px solid #512622;
+      background: #1b1110;
+      padding: 16px 20px;
+      border-radius: 16px;
+      min-width: 172px
+    }
+
+    .hero-stat strong {
+      font-size: 22px;
+      color: var(--lime);
+      display: block
+    }
+
+    .hero-stat span {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, .82fr) minmax(0, 1.18fr);
+      gap: 20px;
+      align-items: start
+    }
+
+    .panel {
+      background: linear-gradient(145deg, #171717, #101010);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 60px #0003
+    }
+
+    .panel h2 {
+      font-size: 19px;
+      margin: 0 0 4px;
+      letter-spacing: -.3px
+    }
+
+    .sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 21px
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 12px
+    }
+
+    .field {
+      margin-bottom: 14px
+    }
+
+    .field.full {
+      grid-column: 1/-1
+    }
+
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 750;
+      margin-bottom: 7px;
+      color: #ddd
+    }
+
+    .field label span {
+      font-weight: 500;
+      color: var(--muted)
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 46px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid #393939;
+      background: #0b0b0b;
+      color: var(--white);
+      font: inherit
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid #f0443855;
+      border-color: var(--lime)
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px
+    }
+
+    .segmented label {
+      margin: 0
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .segmented span {
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #393939;
+      background: #0b0b0b;
+      border-radius: 9px;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 13px
+    }
+
+    .segmented input:checked+span {
+      border-color: var(--lime);
+      background: #321614;
+      color: #ff8b82;
+      font-weight: 800
+    }
+
+    .calculate {
+      width: 100%;
+      height: 49px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--lime);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      margin-top: 3px
+    }
+
+    .calculate:hover {
+      background: #d92e23
+    }
+
+    .form-note {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 12px 0 0
+    }
+
+    .error {
+      color: #ffb5ad;
+      font-size: 13px;
+      margin: 12px 0 0;
+      min-height: 20px
+    }
+
+    .results {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px
+    }
+
+    .empty {
+      min-height: 290px;
+      border: 1px dashed #393939;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 34px;
+      color: var(--muted)
+    }
+
+    .empty-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: #321614;
+      color: var(--lime);
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+      margin: 0 auto 14px
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--white);
+      font-size: 16px;
+      margin-bottom: 5px
+    }
+
+    .result-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .result-top h2 {
+      margin: 0;
+      font-size: 20px
+    }
+
+    .result-top p {
+      margin: 3px 0;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .bmi-pill {
+      padding: 5px 10px;
+      border-radius: 99px;
+      border: 1px solid #512622;
+      background: #241311;
+      color: #ff9a91;
+      font-size: 11px;
+      white-space: nowrap
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px
+    }
+
+    .target {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #0c0c0c;
+      border-radius: 14px;
+      padding: 15px 13px;
+      min-height: 146px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .target::after {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      right: -25px;
+      top: -28px;
+      background: currentColor;
+      opacity: .08
+    }
+
+    .target.loss {
+      color: var(--blue)
+    }
+
+    .target.maintain {
+      color: var(--lime)
+    }
+
+    .target.gain {
+      color: var(--green)
+    }
+
+    .target-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .6px
+    }
+
+    .target strong {
+      display: block;
+      color: var(--white);
+      font-size: clamp(19px, 2.6vw, 27px);
+      line-height: 1.2;
+      margin: 12px 0 3px;
+      white-space: nowrap
+    }
+
+    .target small {
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .target p {
+      font-size: 11px;
+      color: #d0d0d0;
+      margin: 9px 0 0;
+      line-height: 1.35
+    }
+
+    .target:hover, .target:focus-visible, .target[aria-pressed="true"] { border-color: currentColor; transform: translateY(-2px); outline: none; box-shadow: 0 0 0 1px currentColor }
+    .target { transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease }
+    .target .choose { display:block; margin-top:10px; font-size:11px; color:currentColor; font-weight:800 }
+    .goal-plan { border:1px solid #512622; background:linear-gradient(145deg,#1c1110,#101010); border-radius:16px; padding:18px }
+    .goal-plan h3 { margin:0 0 4px; font-size:17px }
+    .goal-plan > p { margin:0 0 14px; color:var(--muted); font-size:12px }
+    .goal-summary { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:12px 0 16px }
+    .goal-stat { background:#0b0b0b; border:1px solid var(--line); border-radius:12px; padding:12px }
+    .goal-stat span { display:block; color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.5px }
+    .goal-stat strong { display:block; margin-top:3px; font-size:20px; color:#ff9a91 }
+    .meal-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:9px }
+    .meal { background:#0b0b0b; border:1px solid #292929; border-radius:11px; padding:12px }
+    .meal strong { display:block; color:#fff; font-size:12px }
+    .meal span { color:#c7c7c7; font-size:11px }
+    .goal-footnote { margin:12px 0 0!important; font-size:10px!important; color:#aaa!important }
+
+    .guide {
+      border: 1px solid var(--line);
+      background: #0c0c0c;
+      border-radius: 14px;
+      padding: 17px
+    }
+
+    .guide h3 {
+      font-size: 14px;
+      margin: 0 0 9px
+    }
+
+    .guide-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px
+    }
+
+    .guide-item {
+      display: flex;
+      gap: 9px;
+      color: #ccc;
+      font-size: 12px
+    }
+
+    .guide-item i {
+      font-style: normal;
+      color: var(--lime);
+      font-weight: 900
+    }
+
+    .guide-item strong {
+      color: var(--white)
+    }
+
+    .notice {
+      border-left: 3px solid #d1aa5f;
+      background: #211c12;
+      color: #e0d4ba;
+      padding: 12px 14px;
+      border-radius: 0 10px 10px 0;
+      font-size: 12px
+    }
+
+    .tips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+      margin-top: 22px
+    }
+
+    .tip {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 17px
+    }
+
+    .tip-icon {
+      font-size: 18px
+    }
+
+    .tip h3 {
+      font-size: 13px;
+      margin: 8px 0 4px
+    }
+
+    .tip p {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    @media(max-width:820px) {
+      .layout {
+        grid-template-columns: 1fr
+      }
+
+      .hero {
+        align-items: start
+      }
+
+      .hero-stat {
+        align-self: center
+      }
+
+      .results {
+        min-height: 0
+      }
+    }
+
+    @media(max-width:560px) {
+      .nav {
+        padding: 17px 18px
+      }
+
+      main {
+        width: min(100% - 26px, 1120px);
+        margin-top: 5px
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 17px;
+        padding: 22px 0 25px
+      }
+
+      .hero h1 {
+        letter-spacing: -1.7px
+      }
+
+      .hero-stat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 0
+      }
+
+      .hero-stat strong {
+        font-size: 19px
+      }
+
+      .panel {
+        padding: 19px;
+        border-radius: 17px
+      }
+
+      .target-grid {
+        grid-template-columns: 1fr
+      }
+
+      .target {
+        min-height: 0;
+        padding: 15px
+      }
+
+      .target strong {
+        margin: 5px 0;
+        font-size: 24px
+      }
+
+      .target p {
+        margin-top: 5px
+      }
+
+      .guide-list {
+        grid-template-columns: 1fr
+      }
+
+      .tips {
+        grid-template-columns: 1fr
+      }
+
+      .result-top {
+        align-items: center
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav"><a class="brand" href="index.html">FITNESS <b>46</b></a><a class="back" href="index.html">← Back to
+      home</a></nav>
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Nutrition, made personal</div>
+        <h1>Your daily calorie<br>game plan.</h1>
+        <p>Get a practical starting estimate for maintaining, losing, or gaining weight—based on your body and usual
+          activity.</p>
+      </div>
+      <div class="hero-stat"><strong>3 clear targets</strong><span>One estimate. Three ways to use it.</span></div>
+    </section>
+    <section class="layout" aria-label="Calorie estimate tool">
+      <form class="panel" id="calorieForm">
+        <h2>Build your estimate</h2>
+        <p class="sub">Use your current details for a useful starting point.</p>
+        <div class="field"><label>Formula reference</label>
+          <div class="segmented"><label><input type="radio" name="gender" value="male"
+                checked><span>Male</span></label><label><input type="radio" name="gender"
+                value="female"><span>Female</span></label></div>
+        </div>
+        <div class="fields">
+          <div class="field"><label for="age">Age <span>years</span></label><input id="age" type="number" min="18"
+              max="100" placeholder="e.g. 25" required></div>
+          <div class="field"><label for="weight">Weight <span>kg</span></label><input id="weight" type="number" min="30"
+              max="300" step="0.1" placeholder="e.g. 70" required></div>
+          <div class="field full"><label for="height">Height <span>cm</span></label><input id="height" type="number"
+              min="120" max="230" placeholder="e.g. 175" required></div>
+          <div class="field full"><label for="activity">Typical activity</label><select id="activity" required>
+              <option value="">Choose your usual week</option>
+              <option value="1.2">Mostly sitting; little planned exercise</option>
+              <option value="1.375">Light activity or exercise 1–3 days/week</option>
+              <option value="1.55">Moderate exercise 3–5 days/week</option>
+              <option value="1.725">Hard exercise 6–7 days/week</option>
+              <option value="1.9">Very hard training or physical job</option>
+            </select></div>
+        </div>
+        <button class="calculate" type="submit">Show my calorie targets <span aria-hidden="true">→</span></button>
+        <p class="form-note">For adults 18+. Estimates are not a diagnosis or a meal plan.</p>
+        <p id="error" class="error" role="alert"></p>
+      </form>
+      <div class="results" id="results" aria-live="polite">
+        <div class="empty" id="empty">
+          <div>
+            <div class="empty-mark">↗</div><strong>Your plan will appear here</strong><span>Enter your details to see
+              all three daily targets.</span>
+          </div>
+        </div>
+        <div id="resultContent" class="hidden">
+          <div class="result-top">
+            <div>
+              <h2>Your daily targets</h2>
+              <p id="resultSummary"></p>
+            </div><span class="bmi-pill" id="bmiPill"></span>
+          </div>
+          <div class="target-grid">
+            <button class="target loss" type="button" data-goal="loss" aria-pressed="false">
+              <div class="target-label">Fat loss</div><strong id="lossCalories">—</strong><small>kcal / day</small>
+              <p>About 300 below maintenance. Start gently and track your trend.</p><span class="choose">See monthly estimate & meal plan →</span>
+            </button>
+            <button class="target maintain" type="button" data-goal="maintain" aria-pressed="false">
+              <div class="target-label">Maintain</div><strong id="maintainCalories">—</strong><small>kcal / day</small>
+              <p>Your estimated balance point for keeping weight broadly steady.</p><span class="choose">See monthly estimate & meal plan →</span>
+            </button>
+            <button class="target gain" type="button" data-goal="gain" aria-pressed="false">
+              <div class="target-label">Weight gain</div><strong id="gainCalories">—</strong><small>kcal / day</small>
+              <p>About 300 above maintenance for gradual weight gain.</p><span class="choose">See monthly estimate & meal plan →</span>
+            </button>
+          </div>
+          <section id="goalPlan" class="goal-plan hidden" aria-live="polite" aria-labelledby="goalPlanTitle">
+            <h3 id="goalPlanTitle">Your goal plan</h3><p id="goalPlanIntro"></p>
+            <div class="goal-summary"><div class="goal-stat"><span>Daily calorie target</span><strong id="goalDailyCalories"></strong></div><div class="goal-stat"><span>Estimated monthly change</span><strong id="goalMonthlyChange"></strong></div></div>
+            <h3 style="font-size:14px;margin-bottom:9px">Simple Indian meal day</h3>
+            <div class="meal-grid" id="mealGrid"></div>
+            <p class="goal-footnote">Meal portions are examples, not a prescribed diet. Calorie and weight changes vary; review your 2–3 week trend and adjust gradually. If you have a medical condition, consult a registered dietitian.</p>
+          </section>
+          <div class="guide">
+            <h3>How to use these numbers</h3>
+            <div class="guide-list">
+              <div class="guide-item"><i>01</i><span>Pick the target that matches your goal; build meals around
+                  nourishing foods.</span></div>
+              <div class="guide-item"><i>02</i><span>Follow it consistently and compare average weight over <strong>2–3
+                    weeks</strong>.</span></div>
+              <div class="guide-item"><i>03</i><span>If your trend is not moving, adjust a little and reassess—not day
+                  by day.</span></div>
+              <div class="guide-item"><i>04</i><span>Daily weight shifts are normal; hydration and routine matter
+                  too.</span></div>
+            </div>
+          </div>
+          <div class="notice">This is a rough estimate. Activity multipliers and calorie needs vary between people.
+            Avoid aggressive restriction; ask a doctor or registered dietitian for guidance if you are under 18,
+            pregnant, managing a medical condition, or have a history of disordered eating.</div>
+        </div>
+      </div>
+    </section>
+    <section class="tips" aria-label="Nutrition tips">
+      <article class="tip">
+        <div class="tip-icon">🥗</div>
+        <h3>Make the target sustainable</h3>
+        <p>Choose filling meals with protein, vegetables or fruit, and high-fibre carbohydrates.</p>
+      </article>
+      <article class="tip">
+        <div class="tip-icon">📈</div>
+        <h3>Look at the trend</h3>
+        <p>Use a weekly average rather than reacting to one weigh-in. Progress is rarely a straight line.</p>
+      </article>
+      <article class="tip">
+        <div class="tip-icon">🏋️</div>
+        <h3>Support your training</h3>
+        <p>Keep regular movement and strength training in your routine while working toward your goal.</p>
+      </article>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById('calorieForm');
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const error = document.getElementById('error'); error.textContent = '';
+      if (!form.reportValidity()) return;
+      const age = Number(document.getElementById('age').value), weight = Number(document.getElementById('weight').value), height = Number(document.getElementById('height').value), activity = Number(document.getElementById('activity').value), gender = form.querySelector('input[name="gender"]:checked').value;
+      if (age < 18 || age > 100 || weight < 30 || weight > 300 || height < 120 || height > 230 || !activity) { error.textContent = 'Please enter valid adult age, height, weight, and activity details.'; return }
+      const bmr = 10 * weight + 6.25 * height - 5 * age + (gender === 'male' ? 5 : -161);
+      const maintenance = Math.round(bmr * activity / 10) * 10;
+      const loss = maintenance - 300, gain = maintenance + 300, bmi = weight / ((height / 100) ** 2);
+      window.calorieTargets = { loss, maintain: maintenance, gain };
+      document.querySelectorAll('.target').forEach(card => card.setAttribute('aria-pressed', 'false'));
+      document.getElementById('goalPlan').classList.add('hidden');
+      document.getElementById('lossCalories').textContent = loss.toLocaleString('en-IN');
+      document.getElementById('maintainCalories').textContent = maintenance.toLocaleString('en-IN');
+      document.getElementById('gainCalories').textContent = gain.toLocaleString('en-IN');
+      document.getElementById('resultSummary').textContent = `Based on age ${age}, ${height} cm, ${weight} kg, and your activity selection.`;
+      const bmiLabel = bmi < 18.5 ? 'Below usual range' : bmi < 25 ? 'Usual range' : bmi < 30 ? 'Above usual range' : 'High range';
+      document.getElementById('bmiPill').textContent = `BMI ${bmi.toFixed(1)} · ${bmiLabel}`;
+      document.getElementById('empty').classList.add('hidden'); document.getElementById('resultContent').classList.remove('hidden');
+    });
+
+    const mealExamples = {
+      loss: [
+        ['Breakfast', 'Oats with milk/curd, fruit, and eggs or paneer'],
+        ['Lunch', 'Dal or chicken, roti/rice, plenty of sabzi and salad'],
+        ['Snack', 'Fruit with unsweetened curd or roasted chana'],
+        ['Dinner', 'Paneer/tofu/eggs/chicken, vegetables, and a measured rice/roti portion']
+      ],
+      maintain: [
+        ['Breakfast', 'Poha/upma with eggs or sprouts, plus fruit'],
+        ['Lunch', 'Dal/rajma/chicken, rice or roti, sabzi and curd'],
+        ['Snack', 'Banana with milk or curd and a small handful of nuts'],
+        ['Dinner', 'Paneer/tofu/fish/chicken, roti or rice, and vegetables']
+      ],
+      gain: [
+        ['Breakfast', 'Oats with milk, banana, peanut butter, and eggs or paneer'],
+        ['Lunch', 'Extra rice/roti with dal or chicken, vegetables, curd'],
+        ['Snack', 'Milk smoothie with banana, or peanut butter sandwich and curd'],
+        ['Dinner', 'Paneer/tofu/fish/chicken, rice/roti, vegetables, and curd']
+      ]
+    };
+    const goalDetails = {
+      loss: { title: 'Fat-loss plan', intro: 'A modest calorie deficit is a gradual starting point. Keep protein in each meal and continue strength training.', monthly: '≈ 1.2 kg loss' },
+      maintain: { title: 'Maintenance plan', intro: 'This target aims to keep your weekly average weight broadly steady while you eat balanced meals.', monthly: '≈ 0 kg change' },
+      gain: { title: 'Weight-gain plan', intro: 'A modest surplus supports gradual gain. Pair it with progressive strength training; weight gain is not all muscle.', monthly: '≈ 1.2 kg gain' }
+    };
+    document.querySelectorAll('.target').forEach(card => card.addEventListener('click', () => {
+      if (!window.calorieTargets) return;
+      const goal = card.dataset.goal, details = goalDetails[goal], calories = window.calorieTargets[goal];
+      document.querySelectorAll('.target').forEach(item => item.setAttribute('aria-pressed', String(item === card)));
+      document.getElementById('goalPlanTitle').textContent = details.title;
+      document.getElementById('goalPlanIntro').textContent = details.intro;
+      document.getElementById('goalDailyCalories').textContent = calories.toLocaleString('en-IN') + ' kcal';
+      document.getElementById('goalMonthlyChange').textContent = details.monthly;
+      document.getElementById('mealGrid').innerHTML = mealExamples[goal].map((meal, index) => {
+        const share = [0.25, 0.30, 0.15, 0.30][index];
+        return `<div class="meal"><strong>${meal[0]} · about ${Math.round(calories * share / 10) * 10} kcal</strong><span>${meal[1]}</span></div>`;
+      }).join('');
+      document.getElementById('goalPlan').classList.remove('hidden');
+      document.getElementById('goalPlan').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }));
+  </script>
+</body>
+
+</html>

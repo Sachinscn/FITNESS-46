@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101010">
+  <title>Community | Fitness 46</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f5f6;
+      --surface: #fff;
+      --ink: #171717;
+      --muted: #71717a;
+      --line: #e4e4e7;
+      --red: #e93225;
+      --soft-red: #fff0ee
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 Arial, sans-serif
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .topbar {
+      background: #101010;
+      color: #fff
+    }
+
+    .nav {
+      width: min(1120px, 100% - 36px);
+      margin: auto;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 1px
+    }
+
+    .brand span {
+      color: #ff4d40
+    }
+
+    .navlinks {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 14px
+    }
+
+    .navlinks a:hover {
+      color: #ff786e
+    }
+
+    .navlinks .profile-icon {
+      display: flex;
+      align-items: center
+    }
+
+    .wrap {
+      width: min(1120px, 100% - 36px);
+      margin: 34px auto 72px
+    }
+
+    .hero {
+      background: linear-gradient(110deg, #171717, #3c0907);
+      color: #fff;
+      border-radius: 18px;
+      padding: 34px 38px;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px
+    }
+
+    .eyebrow {
+      color: #ff8076;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      font-weight: 700;
+      font-size: 11px;
+      margin: 0 0 7px
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 4vw, 38px);
+      line-height: 1.1;
+      margin: 0 0 8px
+    }
+
+    .hero p {
+      margin: 0;
+      color: #ddd
+    }
+
+    .hero-mark {
+      font-size: 50px;
+      opacity: .9
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start
+    }
+
+    .side,
+    .panel,
+    .post {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px
+    }
+
+    .side {
+      padding: 19px;
+      position: sticky;
+      top: 18px
+    }
+
+    .side h2 {
+      font-size: 16px;
+      margin: 0 0 13px
+    }
+
+    .filters {
+      display: grid;
+      gap: 6px
+    }
+
+    .filter {
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #52525b;
+      text-align: left;
+      padding: 10px 11px;
+      font: inherit;
+      cursor: pointer
+    }
+
+    .filter:hover {
+      background: #f4f4f5
+    }
+
+    .filter.active {
+      background: var(--soft-red);
+      color: #ba2017;
+      font-weight: 700
+    }
+
+    .side-note {
+      border-top: 1px solid var(--line);
+      padding-top: 15px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .main {
+      min-width: 0
+    }
+
+    .panel {
+      padding: 19px 20px;
+      margin-bottom: 16px
+    }
+
+    .composer-title {
+      font-weight: 700;
+      margin: 0 0 12px
+    }
+
+    .composer {
+      width: 100%;
+      min-height: 100px;
+      resize: vertical;
+      border: 1px solid #d4d4d8;
+      background: #fafafa;
+      border-radius: 10px;
+      padding: 12px;
+      font: inherit;
+      outline: none
+    }
+
+    .composer:focus,
+    .comment-input:focus {
+      border-color: #ee766d;
+      box-shadow: 0 0 0 3px #f044381c
+    }
+
+    .compose-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px
+    }
+
+    .select {
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit
+    }
+
+    .primary {
+      border: 0;
+      border-radius: 9px;
+      background: var(--red);
+      color: #fff;
+      padding: 11px 17px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer
+    }
+
+    .primary:hover {
+      background: #c92319
+    }
+
+    .primary:disabled {
+      opacity: .55;
+      cursor: wait
+    }
+
+    .auth-box {
+      text-align: center;
+      padding: 28px
+    }
+
+    .auth-box h2 {
+      margin: 0 0 6px
+    }
+
+    .auth-box p {
+      margin: 0 auto 15px;
+      color: var(--muted);
+      max-width: 500px
+    }
+
+    .message {
+      display: none;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: #fff2f0;
+      border: 1px solid #ffd0ca;
+      color: #9c241c;
+      font-size: 13px;
+      margin-bottom: 12px
+    }
+
+    .post {
+      padding: 20px;
+      margin-bottom: 14px
+    }
+
+    .post-top {
+      display: flex;
+      align-items: center;
+      gap: 11px
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 800;
+      flex: 0 0 40px
+    }
+
+    .post-meta {
+      min-width: 0
+    }
+
+    .post-author {
+      font-weight: 700
+    }
+
+    .post-time {
+      font-size: 12px;
+      color: var(--muted)
+    }
+
+    .category {
+      margin-left: auto;
+      border-radius: 20px;
+      background: #f4f4f5;
+      color: #52525b;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 700
+    }
+
+    .post-body {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 17px 0;
+      line-height: 1.65
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 18px;
+      border-top: 1px solid #eee;
+      padding-top: 12px
+    }
+
+    .action {
+      border: 0;
+      background: none;
+      padding: 3px 0;
+      color: #52525b;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    .action:hover,
+    .action.liked {
+      color: #d7271c
+    }
+
+    .comments {
+      border-top: 1px solid #eee;
+      margin-top: 13px;
+      padding-top: 13px
+    }
+
+    .comment {
+      display: flex;
+      gap: 9px;
+      margin: 10px 0
+    }
+
+    .comment .avatar {
+      width: 30px;
+      height: 30px;
+      flex-basis: 30px;
+      font-size: 12px
+    }
+
+    .comment-content {
+      background: #f7f7f8;
+      border-radius: 10px;
+      padding: 8px 11px;
+      min-width: 0
+    }
+
+    .comment-content strong {
+      font-size: 12px
+    }
+
+    .comment-content p {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin: 2px 0 0;
+      font-size: 13px
+    }
+
+    .comment-time {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px
+    }
+
+    .comment-input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px 12px;
+      font: inherit;
+      outline: none
+    }
+
+    .comment-form .primary {
+      padding: 9px 13px
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 36px 15px
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--ink);
+      font-size: 17px;
+      margin-bottom: 5px
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 9px 0 0
+    }
+
+    .member {
+      font-size: 13px;
+      color: #ddd
+    }
+
+    .member button {
+      color: white;
+      background: none;
+      border: 0;
+      text-decoration: underline;
+      cursor: pointer
+    }
+
+    .mobile-categories {
+      display: none
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .primary {
+      display: inline-block
+    }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 9px
+    }
+
+    .photo-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .photo-label,
+    .remove-photo {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px 11px;
+      cursor: pointer;
+      color: #333
+    }
+
+    .photo-preview,
+    .post-photo {
+      display: block;
+      max-width: 100%;
+      max-height: 560px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin: 12px auto 16px
+    }
+
+    .photo-preview {
+      max-height: 330px
+    }
+
+    @media(max-width:760px) {
+      .navlinks a:not(.profile-icon) {
+        display: none
+      }
+
+      .wrap {
+        margin-top: 20px
+      }
+
+      .hero {
+        padding: 25px 22px
+      }
+
+      .hero-mark {
+        font-size: 37px
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 13px
+      }
+
+      .side {
+        position: static;
+        padding: 14px
+      }
+
+      .side h2 {
+        margin-bottom: 10px
+      }
+
+      .filters {
+        display: flex;
+        overflow: auto
+      }
+
+      .filter {
+        white-space: nowrap
+      }
+
+      .side-note {
+        display: none
+      }
+
+      .panel {
+        padding: 16px
+      }
+
+      .post {
+        padding: 16px
+      }
+
+      .category {
+        font-size: 10px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation"><a class="brand" href="index.html">FITNESS <span>46</span></a>
+      <div class="navlinks"><a href="index.html">Home</a><a
+          href="contacts.html">Contact</a><a class="profile-icon" href="profile.html" aria-label="Profile"
+          title="Profile"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none"
+            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4.5 21a7.5 7.5 0 0 1 15 0" />
+          </svg></a><span id="memberBox" class="member hidden"><span id="memberEmail"></span><button id="signOut"
+            type="button">Log out</button></span></div>
+    </nav>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Fitness 46 members</p>
+        <h1>Stronger, together.</h1>
+        <p>Share your progress, trade useful tips, and keep each other moving.</p>
+      </div>
+      <div class="hero-mark" aria-hidden="true">✦</div>
+    </section>
+    <div id="authBox" class="panel auth-box hidden">
+      <h2>Join the conversation</h2>
+      <p>Log in or create a Fitness 46 account to view posts, share updates, like, and comment.</p><a class="primary"
+        href="profile.html">Go to profile &amp; log in</a>
+    </div>
+    <div id="communityApp" class="layout hidden">
+      <aside class="side">
+        <h2>Categories</h2>
+        <div class="filters" id="filters"><button class="filter active" data-category="All">All posts</button><button
+            class="filter" data-category="Transformation">Transformation</button><button class="filter"
+            data-category="Achievement">Achievement</button><button class="filter"
+            data-category="Nutrition">Nutrition</button><button class="filter"
+            data-category="Motivation">Motivation</button><button class="filter"
+            data-category="Workout">Workout</button></div>
+        <p class="side-note">Keep it supportive and respectful. Don’t share private medical details or personal
+          information.</p>
+      </aside>
+      <section class="main" aria-label="Community feed">
+        <form id="postForm" class="panel">
+          <p class="composer-title">Share something with the community</p>
+          <div id="postMessage" class="message" role="alert"></div><textarea id="postBody" class="composer"
+            maxlength="2000" placeholder="What are you working on today?" required></textarea>
+          <div class="photo-tools"><label class="photo-label" for="postPhoto">📷 Add a photo</label><input
+              id="postPhoto" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><span
+              id="photoName">No photo selected</span><button id="clearPhoto" class="remove-photo hidden"
+              type="button">Remove photo</button></div><img id="photoPreview" class="photo-preview hidden"
+            alt="Selected photo preview">
+          <div class="compose-row"><select id="postCategory" class="select" aria-label="Post category">
+              <option>Transformation</option>
+              <option>Achievement</option>
+              <option>Nutrition</option>
+              <option>Motivation</option>
+              <option>Workout</option>
+            </select><button class="primary" type="submit">Share post</button></div>
+          <p class="hint">Up to 2,000 characters. Photos: JPG, PNG, WebP, or GIF up to 5 MB. Please avoid posting
+            sensitive health information.</p>
+        </form>
+        <div id="feedMessage" class="message" role="alert"></div>
+        <div id="feed" aria-live="polite">
+          <div class="empty">Loading the community feed…</div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    const SUPABASE_URL = 'https://ardlmzqewsbhixkxekuo.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_QAWj7P2JoDJntCoLK_8tEA_lebiM45H';
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    const categories = ['Transformation', 'Achievement', 'Nutrition', 'Motivation', 'Workout'];
+    let currentUser = null, currentCategory = 'All', communityPosts = [];
+    const $ = id => document.getElementById(id);
+    function node(tag, className, text) { const el = document.createElement(tag); if (className) el.className = className; if (text !== undefined) el.textContent = text; return el }
+    function showMessage(id, text) { const el = $(id); el.textContent = text; el.style.display = text ? 'block' : 'none' }
+    function initials(name) { return (name || 'F').trim().charAt(0).toUpperCase() || 'F' }
+    function formatDate(value) { return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) }
+    function setSignedIn(user) { currentUser = user; $('authBox').classList.toggle('hidden', !!user); $('communityApp').classList.toggle('hidden', !user); $('memberBox').classList.toggle('hidden', !user); $('memberEmail').textContent = user ? user.email : ''; if (user) loadFeed() }
+    async function ensureMember() { const { data, error } = await db.from('profiles').upsert({ id: currentUser.id, full_name: currentUser.user_metadata?.full_name || '' }, { onConflict: 'id' }).select('full_name').single(); if (error) throw error; return data.full_name || currentUser.user_metadata?.full_name || 'Fitness 46 member' }
+    function visiblePosts() { return currentCategory === 'All' ? communityPosts : communityPosts.filter(post => post.category === currentCategory) }
+    async function loadFeed() {
+      $('feed').replaceChildren(node('div', 'empty', 'Loading the community feed…')); showMessage('feedMessage', '');
+      const { data: posts, error } = await db.from('community_posts').select('id,author_id,author_name,category,body,image_path,created_at').order('created_at', { ascending: false }).limit(100);
+      if (error) { $('feed').replaceChildren(); showMessage('feedMessage', 'Could not load the feed. Run the updated supabase-schema.sql in the Supabase SQL Editor, then refresh this page.'); return }
+      communityPosts = posts || [];
+      const ids = communityPosts.map(post => post.id);
+      if (!ids.length) { renderFeed(); return }
+      const [likesResult, commentsResult] = await Promise.all([
+        db.from('community_likes').select('post_id,user_id').in('post_id', ids),
+        db.from('community_comments').select('id,post_id,author_id,author_name,body,created_at').in('post_id', ids).order('created_at', { ascending: true })
+      ]);
+      if (likesResult.error || commentsResult.error) { showMessage('feedMessage', 'Some community details could not load. Please check that the updated schema query ran successfully.'); return }
+      const likesByPost = {}, commentsByPost = {};
+      for (const like of likesResult.data || []) (likesByPost[like.post_id] ??= []).push(like.user_id);
+      for (const comment of commentsResult.data || []) (commentsByPost[comment.post_id] ??= []).push(comment);
+      const photos = await Promise.all(communityPosts.filter(post => post.image_path).map(async post => {
+        const { data, error } = await db.storage.from('fitness46-community').createSignedUrl(post.image_path, 3600);
+        return [post.id, error ? '' : data.signedUrl];
+      }));
+      const photoUrls = Object.fromEntries(photos);
+      communityPosts = communityPosts.map(post => ({ ...post, author_name: post.author_name || 'Fitness 46 member', image_url: photoUrls[post.id] || '', likes: likesByPost[post.id] || [], comments: commentsByPost[post.id] || [] }));
+      renderFeed();
+    }
+    function renderFeed() {
+      const posts = visiblePosts(); $('feed').replaceChildren();
+      if (!posts.length) { const empty = node('div', 'empty'); empty.append(node('strong', '', currentCategory === 'All' ? 'Your community starts here' : 'No posts in this category yet'), node('span', '', currentCategory === 'All' ? 'Share a win, ask a question, or post your workout.' : 'Try another category or be the first to share.')); $('feed').append(empty); return }
+      for (const post of posts) $('feed').append(renderPost(post));
+    }
+    function renderPost(post) {
+      const article = node('article', 'post');
+      const top = node('div', 'post-top'); top.append(node('div', 'avatar', initials(post.author_name)));
+      const meta = node('div', 'post-meta'); meta.append(node('div', 'post-author', post.author_name), node('time', 'post-time', formatDate(post.created_at))); top.append(meta, node('span', 'category', post.category)); article.append(top, node('p', 'post-body', post.body));
+      if (post.image_url) { const photo = node('img', 'post-photo'); photo.src = post.image_url; photo.alt = 'Photo shared by ' + post.author_name; photo.loading = 'lazy'; article.append(photo) }
+      const actions = node('div', 'post-actions'); const liked = post.likes.includes(currentUser.id); const likeButton = node('button', 'action' + (liked ? ' liked' : ''), (liked ? '♥' : '♡') + ' ' + post.likes.length + ' ' + (post.likes.length === 1 ? 'Like' : 'Likes')); likeButton.type = 'button'; likeButton.setAttribute('aria-pressed', String(liked)); likeButton.addEventListener('click', () => toggleLike(post)); const commentLabel = node('span', 'action', '💬 ' + post.comments.length + ' ' + (post.comments.length === 1 ? 'Comment' : 'Comments')); actions.append(likeButton, commentLabel); article.append(actions);
+      const comments = node('div', 'comments'); for (const comment of post.comments) { const row = node('div', 'comment'); row.append(node('div', 'avatar', initials(comment.author_name))); const content = node('div', 'comment-content'); content.append(node('strong', '', comment.author_name), node('p', '', comment.body), node('time', 'comment-time', formatDate(comment.created_at))); row.append(content); comments.append(row) }
+      const form = node('form', 'comment-form'); const input = node('input', 'comment-input'); input.type = 'text'; input.maxLength = 1000; input.placeholder = 'Write a supportive comment…'; input.required = true; input.setAttribute('aria-label', 'Write a comment'); const button = node('button', 'primary', 'Send'); button.type = 'submit'; form.append(input, button); form.addEventListener('submit', event => submitComment(event, post, input, button)); comments.append(form); article.append(comments); return article;
+    }
+    async function toggleLike(post) {
+      const liked = post.likes.includes(currentUser.id); const result = liked ? await db.from('community_likes').delete().eq('post_id', post.id).eq('user_id', currentUser.id) : await db.from('community_likes').insert({ post_id: post.id, user_id: currentUser.id });
+      if (result.error) { showMessage('feedMessage', 'Could not update your like. Please try again.'); return } await loadFeed();
+    }
+    async function submitComment(event, post, input, button) {
+      event.preventDefault(); const body = input.value.trim(); if (!body) return; button.disabled = true;
+      try { await ensureMember(); const { error } = await db.from('community_comments').insert({ post_id: post.id, author_id: currentUser.id, body }); if (error) throw error; await loadFeed() }
+      catch (error) { showMessage('feedMessage', 'Could not add comment: ' + error.message) } finally { button.disabled = false }
+    }
+    $('postForm').addEventListener('submit', async event => {
+      event.preventDefault(); const body = $('postBody').value.trim(), file = $('postPhoto').files[0]; if (!body) return;
+      if (file && (file.size > 5 * 1024 * 1024 || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type))) { showMessage('postMessage', 'Choose a JPG, PNG, WebP, or GIF image up to 5 MB.'); return }
+      const button = event.currentTarget.querySelector('button[type="submit"]'); button.disabled = true; showMessage('postMessage', ''); let imagePath = null;
+      try {
+        await ensureMember();
+        if (file) {
+          const extension = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' }[file.type];
+          imagePath = currentUser.id + '/' + crypto.randomUUID() + '.' + extension;
+          const { error: uploadError } = await db.storage.from('fitness46-community').upload(imagePath, file, { contentType: file.type, upsert: false });
+          if (uploadError) throw uploadError;
+        }
+        const { error } = await db.from('community_posts').insert({ author_id: currentUser.id, category: $('postCategory').value, body, image_path: imagePath });
+        if (error) { if (imagePath) await db.storage.from('fitness46-community').remove([imagePath]); throw error }
+        $('postBody').value = ''; $('postPhoto').value = ''; clearPhotoPreview(); await loadFeed();
+      } catch (error) { showMessage('postMessage', 'Could not share your post: ' + error.message) } finally { button.disabled = false }
+    });
+    $('postPhoto').addEventListener('change', () => {
+      const file = $('postPhoto').files[0]; if (!file) { clearPhotoPreview(); return }
+      if (file.size > 5 * 1024 * 1024 || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) { showMessage('postMessage', 'Choose a JPG, PNG, WebP, or GIF image up to 5 MB.'); $('postPhoto').value = ''; clearPhotoPreview(); return }
+      showMessage('postMessage', ''); $('photoName').textContent = file.name; $('clearPhoto').classList.remove('hidden'); $('photoPreview').src = URL.createObjectURL(file); $('photoPreview').classList.remove('hidden');
+    });
+    function clearPhotoPreview() { const preview = $('photoPreview'); if (preview.src.startsWith('blob:')) URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); preview.classList.add('hidden'); $('photoName').textContent = 'No photo selected'; $('clearPhoto').classList.add('hidden') }
+    $('clearPhoto').addEventListener('click', () => { $('postPhoto').value = ''; clearPhotoPreview() });
+    $('filters').addEventListener('click', event => { const button = event.target.closest('[data-category]'); if (!button) return; currentCategory = button.dataset.category; document.querySelectorAll('.filter').forEach(filter => filter.classList.toggle('active', filter === button)); renderFeed() });
+    db.auth.onAuthStateChange((event, session) => { if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') setTimeout(() => setSignedIn(session?.user || null), 0) });
+    db.auth.getSession().then(({ data: { session } }) => setSignedIn(session?.user || null));
+    $('signOut').addEventListener('click', async () => { const { error } = await db.auth.signOut(); if (error) showMessage('feedMessage', 'Could not log out: ' + error.message) });
+  </script>
+</body>
+
+</html>

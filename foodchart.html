@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050505">
+  <title>Food & Macro Guide | Fitness 46</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: #111;
+      --line: #292929;
+      --muted: #aaa;
+      --white: #f5f5f5;
+      --red: #f04438;
+      --red2: #ff766c
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 76% 0, #35100d 0, transparent 36%), var(--bg);
+      color: var(--white);
+      font: 15px/1.5 Arial, sans-serif
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: auto;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center
+    }
+
+    .brand {
+      font-weight: 900;
+      letter-spacing: 1px
+    }
+
+    .brand b {
+      color: var(--red)
+    }
+
+    .back {
+      color: #ccc;
+      font-size: 14px
+    }
+
+    .back:hover {
+      color: var(--red2)
+    }
+
+    main {
+      width: min(1160px, calc(100% - 36px));
+      margin: 25px auto 80px
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 5vw, 56px);
+      border: 1px solid #43201e;
+      border-radius: 24px;
+      background: linear-gradient(105deg, #130d0c 0%, #16100f 60%, #29100e 100%);
+      box-shadow: 0 22px 70px #0005
+    }
+
+    .hero:after {
+      content: "46";
+      position: absolute;
+      right: 30px;
+      bottom: -76px;
+      font-size: clamp(150px, 24vw, 280px);
+      font-weight: 900;
+      line-height: 1;
+      color: #f044380d;
+      pointer-events: none
+    }
+
+    .eyebrow {
+      color: var(--red2);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-weight: 800
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(36px, 6vw, 65px);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin: 12px 0
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      color: #c4bfbe;
+      margin: 0;
+      font-size: 15px
+    }
+
+    .hero-badges {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 22px
+    }
+
+    .hero-badges span {
+      border: 1px solid #51302d;
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: #e8d7d5;
+      font-size: 11px
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin: 26px 0 18px;
+      flex-wrap: wrap
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .filter {
+      border: 1px solid #333;
+      background: #111;
+      color: #ccc;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font: 700 12px Arial, sans-serif;
+      cursor: pointer
+    }
+
+    .filter:hover,
+    .filter.active {
+      border-color: var(--red);
+      background: #321411;
+      color: #fff
+    }
+
+    .search {
+      width: min(280px, 100%);
+      height: 40px;
+      border: 1px solid #333;
+      border-radius: 999px;
+      background: #101010;
+      color: white;
+      padding: 0 15px;
+      font: inherit;
+      outline: none
+    }
+
+    .search:focus {
+      border-color: var(--red)
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 17px
+    }
+
+    .category {
+      overflow: hidden;
+      border: 1px solid #292929;
+      border-radius: 19px;
+      background: linear-gradient(150deg, #151515, #0e0e0e);
+      box-shadow: 0 12px 34px #0004
+    }
+
+    .category[hidden] {
+      display: none
+    }
+
+    .category-photo {
+      height: 175px;
+      position: relative;
+      background: #171717
+    }
+
+    .category-photo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: saturate(.9)
+    }
+
+    .category-photo:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, #080808 0%, #08080826 70%, #00000008)
+    }
+
+    .category-title {
+      position: absolute;
+      z-index: 1;
+      left: 19px;
+      right: 18px;
+      bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px
+    }
+
+    .category-title h2 {
+      font-size: 22px;
+      margin: 0 0 2px
+    }
+
+    .category-title p {
+      font-size: 12px;
+      color: #e1d8d7;
+      margin: 0
+    }
+
+    .category-title .count {
+      font-size: 10px;
+      color: #fff;
+      background: #e232278c;
+      border: 1px solid #ff766c75;
+      padding: 6px 9px;
+      border-radius: 999px;
+      white-space: nowrap
+    }
+
+    .food-list {
+      padding: 5px 17px 12px
+    }
+
+    .food {
+      display: grid;
+      grid-template-columns: minmax(100px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 2px;
+      border-bottom: 1px solid #242424
+    }
+
+    .food:last-child {
+      border-bottom: 0
+    }
+
+    .food-name {
+      font-size: 13px;
+      font-weight: 800
+    }
+
+    .food-serving {
+      color: #909090;
+      font-size: 10px;
+      margin-top: 2px
+    }
+
+    .food-data {
+      text-align: right
+    }
+
+    .food-data strong {
+      font-size: 13px;
+      color: #fff
+    }
+
+    .food-data small {
+      display: block;
+      color: #aaa;
+      font-size: 10px;
+      margin-top: 1px
+    }
+
+    .macro-line {
+      display: flex;
+      gap: 5px;
+      justify-content: flex-end;
+      margin-top: 5px
+    }
+
+    .macro {
+      font-size: 9px;
+      color: #cfcfcf;
+      background: #202020;
+      border-radius: 99px;
+      padding: 3px 6px;
+      white-space: nowrap
+    }
+
+    .macro b {
+      color: #ff978f
+    }
+
+    .tips {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px
+    }
+
+    .tip {
+      border: 1px solid #292929;
+      background: #111;
+      border-radius: 14px;
+      padding: 16px
+    }
+
+    .tip strong {
+      display: block;
+      font-size: 13px;
+      margin: 5px 0
+    }
+
+    .tip p {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0
+    }
+
+    .tip-mark {
+      color: var(--red2);
+      font-size: 17px
+    }
+
+    .footnote {
+      color: #898989;
+      font-size: 10px;
+      margin: 16px 2px 0
+    }
+
+    .no-results {
+      grid-column: 1/-1;
+      padding: 35px;
+      text-align: center;
+      border: 1px dashed #333;
+      border-radius: 16px;
+      color: #aaa
+    }
+
+    @media(max-width:720px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .category-photo {
+        height: 165px
+      }
+
+      .tips {
+        grid-template-columns: 1fr
+      }
+
+      .controls {
+        align-items: stretch
+      }
+
+      .filters {
+        flex-wrap: nowrap;
+        overflow: auto;
+        padding-bottom: 4px
+      }
+
+      .filter {
+        white-space: nowrap
+      }
+
+      .search {
+        width: 100%
+      }
+    }
+
+    @media(max-width:420px) {
+      .nav {
+        padding: 17px
+      }
+
+      .hero {
+        border-radius: 18px
+      }
+
+      .category-title h2 {
+        font-size: 19px
+      }
+
+      .category-photo {
+        height: 150px
+      }
+
+      .food-list {
+        padding-inline: 13px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="nav"><a class="brand" href="index.html">FITNESS <b>46</b></a><a class="back" href="index.html">← Back to
+      home</a></nav>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Eat with a purpose</div>
+      <h1>FOOD & MACRO<br>GUIDE</h1>
+      <p>Simple food ideas for your fitness goal. Explore protein, carbs, healthy fats, and produce—with approximate
+        nutrition per 100 g.</p>
+      <div class="hero-badges"><span>💪 Build & recover</span><span>⚡ Fuel your workouts</span><span>🥑 Balance your
+          plate</span></div>
+    </header>
+    <div class="controls">
+      <div class="filters" role="group" aria-label="Filter food categories"><button class="filter active"
+          data-filter="all">All foods</button><button class="filter" data-filter="protein">High protein</button><button
+          class="filter" data-filter="carbs">Carbs & energy</button><button class="filter" data-filter="fats">Healthy
+          fats</button><button class="filter" data-filter="produce">Fruits & veg</button></div><input class="search"
+        id="search" type="search" placeholder="Search a food…" aria-label="Search foods">
+    </div>
+    <section class="grid" id="foodGrid" aria-live="polite"></section>
+    <section class="tips" aria-label="Food chart tips">
+      <article class="tip"><span class="tip-mark">01 / PROTEIN</span><strong>Add a protein source to meals</strong>
+        <p>Eggs, paneer, lentils, tofu, fish, chicken, and yogurt are versatile choices.</p>
+      </article>
+      <article class="tip"><span class="tip-mark">02 / TRAINING FUEL</span><strong>Carbs can support workouts</strong>
+        <p>Rice, oats, roti, potatoes, fruit, and other grains can help fuel active days.</p>
+      </article>
+      <article class="tip"><span class="tip-mark">03 / BALANCE</span><strong>Include fats and colourful produce</strong>
+        <p>Nuts, seeds, oils, fruits, and vegetables add variety and useful nutrients.</p>
+      </article>
+    </section>
+    <p class="footnote">Nutrition values are approximate per 100 g and vary by brand, food variety, and cooking method.
+      Use packaged-food labels for exact values. This guide is for general information, not personalised medical
+      nutrition advice.</p>
+  </main>
+  <script>
+    const categories = [
+      {
+        id: 'protein', title: 'HIGH PROTEIN', subtitle: 'Build, repair & recover', image: 'images/food-protein.png', foods: [
+          { name: 'Chicken breast, cooked', serving: '100 g cooked', kcal: 165, p: 31, c: 0, f: 4 }, { name: 'Soy chunks, dry', serving: '100 g dry', kcal: 345, p: 52, c: 33, f: 0.5 }, { name: 'Paneer', serving: '100 g', kcal: 265, p: 18, c: 3, f: 20 }, { name: 'Egg, whole', serving: '100 g · about 2 eggs', kcal: 143, p: 13, c: 1, f: 10 }, { name: 'Greek-style yogurt', serving: '100 g', kcal: 59, p: 10, c: 4, f: 0.4 }, { name: 'Lentils, cooked', serving: '100 g cooked', kcal: 116, p: 9, c: 20, f: 0.4 }
+        ]
+      },
+      {
+        id: 'carbs', title: 'CARBS & ENERGY', subtitle: 'Fuel for training and daily life', image: 'images/food-carbs.png', foods: [
+          { name: 'Oats, dry', serving: '100 g dry', kcal: 389, p: 17, c: 66, f: 7 }, { name: 'Rice, cooked', serving: '100 g cooked', kcal: 130, p: 3, c: 28, f: 0.3 }, { name: 'Sweet potato, cooked', serving: '100 g cooked', kcal: 90, p: 2, c: 21, f: 0.2 }, { name: 'Whole-wheat roti', serving: '100 g cooked', kcal: 297, p: 11, c: 50, f: 7 }, { name: 'Banana', serving: '100 g', kcal: 89, p: 1, c: 23, f: 0.3 }, { name: 'Potato, boiled', serving: '100 g cooked', kcal: 87, p: 2, c: 20, f: 0.1 }
+        ]
+      },
+      {
+        id: 'fats', title: 'HEALTHY FATS', subtitle: 'Energy-dense additions', image: 'images/food-fats.png', foods: [
+          { name: 'Almonds', serving: '100 g', kcal: 579, p: 21, c: 22, f: 50 }, { name: 'Walnuts', serving: '100 g', kcal: 654, p: 15, c: 14, f: 65 }, { name: 'Peanut butter', serving: '100 g', kcal: 588, p: 25, c: 20, f: 50 }, { name: 'Chia seeds', serving: '100 g', kcal: 486, p: 17, c: 42, f: 31 }, { name: 'Avocado', serving: '100 g', kcal: 160, p: 2, c: 9, f: 15 }, { name: 'Olive oil', serving: '100 g', kcal: 884, p: 0, c: 0, f: 100 }
+        ]
+      },
+      {
+        id: 'produce', title: 'FRUITS & VEG', subtitle: 'Colour, fibre & variety', image: 'images/food-produce.png', foods: [
+          { name: 'Blueberries', serving: '100 g', kcal: 57, p: 0.7, c: 14, f: 0.3 }, { name: 'Orange', serving: '100 g', kcal: 47, p: 0.9, c: 12, f: 0.1 }, { name: 'Spinach', serving: '100 g raw', kcal: 23, p: 2.9, c: 3.6, f: 0.4 }, { name: 'Broccoli', serving: '100 g raw', kcal: 34, p: 2.8, c: 7, f: 0.4 }, { name: 'Tomato', serving: '100 g', kcal: 18, p: 0.9, c: 3.9, f: 0.2 }, { name: 'Apple', serving: '100 g', kcal: 52, p: 0.3, c: 14, f: 0.2 }
+        ]
+      }
+    ];
+    const grid = document.getElementById('foodGrid'), search = document.getElementById('search'); let active = 'all';
+    function render() { const term = search.value.trim().toLowerCase(); const visible = categories.map(cat => ({ ...cat, foods: cat.foods.filter(food => food.name.toLowerCase().includes(term)) })).filter(cat => (active === 'all' || cat.id === active) && cat.foods.length); grid.innerHTML = visible.length ? visible.map(cat => `<article class="category"><div class="category-photo"><img src="${cat.image}" alt="${cat.subtitle}" loading="lazy"><div class="category-title"><div><h2>${cat.title}</h2><p>${cat.subtitle}</p></div><span class="count">${cat.foods.length} FOODS</span></div></div><div class="food-list">${cat.foods.map(food => `<div class="food"><div><div class="food-name">${food.name}</div><div class="food-serving">${food.serving}</div></div><div class="food-data"><strong>${food.kcal} kcal</strong><small>per 100 g</small><div class="macro-line"><span class="macro">P <b>${food.p}g</b></span><span class="macro">C <b>${food.c}g</b></span><span class="macro">F <b>${food.f}g</b></span></div></div></div>`).join('')}</div></article>`).join('') : '<div class="no-results">No matching foods. Try another search.</div>' }
+    document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => { document.querySelector('.filter.active').classList.remove('active'); button.classList.add('active'); active = button.dataset.filter; render() })); search.addEventListener('input', render); render();
+  </script>
+</body>
+
+</html>

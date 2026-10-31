@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#050505">
+    <title>Contact | Fitness 46</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --panel: #111;
+            --line: #292929;
+            --muted: #aaa;
+            --white: #f5f5f5;
+            --red: #f04438;
+            --soft: #ff8a80
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(ellipse at 75% 0, #37100d 0, transparent 38%), var(--bg);
+            color: var(--white);
+            font: 15px/1.55 Arial, sans-serif
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        .nav {
+            max-width: 1120px;
+            margin: auto;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .brand {
+            font-weight: 900;
+            letter-spacing: 1px
+        }
+
+        .brand span {
+            color: var(--red)
+        }
+
+        .back {
+            font-size: 14px;
+            color: #ccc
+        }
+
+        .back:hover {
+            color: var(--soft)
+        }
+
+        main {
+            width: min(100% - 32px, 980px);
+            margin: 30px auto 72px
+        }
+
+        .hero {
+            padding: clamp(28px, 5vw, 54px);
+            background: linear-gradient(110deg, #15100f, #27100e);
+            border: 1px solid #49221f;
+            border-radius: 22px
+        }
+
+        .eyebrow {
+            color: var(--soft);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 7vw, 60px);
+            line-height: 1;
+            margin: 12px 0;
+            letter-spacing: -1.8px
+        }
+
+        .hero p {
+            color: #c8c0bf;
+            margin: 0;
+            max-width: 640px
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px
+        }
+
+        .card {
+            background: linear-gradient(145deg, #151515, #101010);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: clamp(20px, 4vw, 30px);
+            min-width: 0
+        }
+
+        .card h2 {
+            font-size: 19px;
+            margin: 0 0 8px
+        }
+
+        .card p {
+            color: var(--muted);
+            margin: 0
+        }
+
+        .email-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin: 17px 0 20px
+        }
+
+        .icon {
+            flex: 0 0 44px;
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            background: #321411;
+            color: var(--soft);
+            display: grid;
+            place-items: center;
+            font-size: 19px
+        }
+
+        .email-address {
+            display: block;
+            font-size: clamp(15px, 3.3vw, 20px);
+            font-weight: 800;
+            color: #fff;
+            overflow-wrap: anywhere;
+            line-height: 1.35
+        }
+
+        .email-caption {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px
+        }
+
+        .action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: var(--red);
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px
+        }
+
+        .action:hover {
+            background: #d92e23
+        }
+
+        .founder {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            min-height: 100%
+        }
+
+        .avatar {
+            flex: 0 0 66px;
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #57201c, #251211);
+            border: 1px solid #77352f;
+            color: #ffaaa2;
+            font-size: 23px;
+            font-weight: 900
+        }
+
+        .founder-copy {
+            min-width: 0
+        }
+
+        .role {
+            display: block;
+            color: var(--soft);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+            margin-bottom: 5px
+        }
+
+        .founder-name {
+            display: block;
+            color: #fff;
+            font-size: clamp(20px, 4.5vw, 28px);
+            font-weight: 900;
+            line-height: 1.18;
+            overflow-wrap: anywhere
+        }
+
+        .founder-copy p {
+            font-size: 13px;
+            margin-top: 5px
+        }
+
+        .legal {
+            grid-column: 1/-1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px
+        }
+
+        .legal h2 {
+            margin: 0 0 3px
+        }
+
+        .legal p {
+            font-size: 12px
+        }
+
+        .legal-links {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap
+        }
+
+        .legal-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 9px 13px;
+            border: 1px solid #4b302e;
+            border-radius: 9px;
+            color: #ffaaa2;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .legal-link:hover {
+            border-color: var(--red);
+            background: #24100f
+        }
+
+        .foot {
+            border-top: 1px solid #222;
+            text-align: center;
+            padding: 18px;
+            color: #858585;
+            font-size: 11px
+        }
+
+        .foot a {
+            color: #ffaaa2;
+            margin: 0 7px
+        }
+
+        @media(max-width:620px) {
+            .nav {
+                padding: 17px
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-top: 14px
+            }
+
+            .card {
+                border-radius: 15px
+            }
+
+            .founder {
+                gap: 14px
+            }
+
+            .avatar {
+                width: 56px;
+                height: 56px;
+                flex-basis: 56px
+            }
+
+            .legal {
+                grid-column: auto;
+                align-items: flex-start;
+                flex-direction: column
+            }
+
+            .legal-links {
+                width: 100%
+            }
+
+            .legal-link {
+                flex: 1
+            }
+
+            .hero {
+                border-radius: 18px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav"><a class="brand" href="index.html">FITNESS <span>46</span></a><a class="back" href="index.html">←
+            Back to home</a></nav>
+    <main>
+        <header class="hero">
+            <div class="eyebrow">We're here to help</div>
+            <h1>GET IN TOUCH</h1>
+            <p>Questions about Fitness 46, your account, or an order? Send us an email and our team will get back to
+                you.</p>
+        </header>
+        <section class="contact-grid" aria-label="Fitness 46 contact details">
+            <article class="card">
+                <h2>Contact support</h2>
+                <p>For account, community, product, or order questions.</p>
+                <div class="email-row"><span class="icon" aria-hidden="true">✉</span>
+                    <div><a class="email-address"
+                            href="mailto:help.fitness46@gmail.com">help.fitness46@gmail.com</a><span
+                            class="email-caption">Email support</span></div>
+                </div><a class="action" href="mailto:help.fitness46@gmail.com?subject=Fitness%2046%20Support">Email
+                    Fitness 46 <span aria-hidden="true">↗</span></a>
+            </article>
+            <article class="card founder">
+                <div class="avatar" aria-hidden="true">SY</div>
+                <div class="founder-copy"><span class="role">Founder</span><span class="founder-name">Sachin
+                        Yadav</span>
+                    <p>B.Tech CSE · Fitness 46</p>
+                </div>
+            </article>
+            <article class="card legal">
+                <div>
+                    <h2>Legal information</h2>
+                    <p>Read how the site works and how your information is handled.</p>
+                </div>
+                <div class="legal-links"><a class="legal-link" href="privacy-policy.html">Privacy Policy</a><a
+                        class="legal-link" href="disclaimer.html">Disclaimer</a></div>
+            </article>
+        </section>
+    </main>
+    <footer class="foot">© 2026 Fitness 46 <span aria-hidden="true">·</span> <a href="privacy-policy.html">Privacy
+            Policy</a><a href="disclaimer.html">Disclaimer</a></footer>
+</body>
+
+</html>

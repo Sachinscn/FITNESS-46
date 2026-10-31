@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111">
+  <title>My Profile | Fitness 46</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0b0c;
+      --panel: #151516;
+      --line: #29292c;
+      --muted: #a1a1aa;
+      --red: #f04438;
+      --white: #f7f7f8
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 50% -20%, #48100d 0, transparent 42%), var(--bg);
+      color: var(--white);
+      font: 15px/1.5 Arial, sans-serif;
+      min-height: 100vh
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    .topbar {
+      border-bottom: 1px solid #ffffff14;
+      background: #0b0b0ce8
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 1px
+    }
+
+    .brand span {
+      color: var(--red)
+    }
+
+    .back {
+      color: #d4d4d8;
+      font-size: 14px
+    }
+
+    .back:hover {
+      color: white
+    }
+
+    main {
+      width: min(100% - 32px, 900px);
+      margin: 52px auto 80px
+    }
+
+    .eyebrow {
+      color: #ff766c;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: 700
+    }
+
+    .heading {
+      font-size: clamp(30px, 5vw, 44px);
+      line-height: 1.1;
+      margin: 8px 0
+    }
+
+    .intro {
+      color: var(--muted);
+      margin: 0 0 28px
+    }
+
+    .card {
+      background: linear-gradient(145deg, #171718, #111112);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: clamp(22px, 5vw, 38px);
+      box-shadow: 0 18px 60px #0005
+    }
+
+    .auth-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center
+    }
+
+    .benefits {
+      padding: 12px 10px 12px 0
+    }
+
+    .benefits h2 {
+      font-size: 25px;
+      margin: 10px 0
+    }
+
+    .benefits p {
+      color: var(--muted)
+    }
+
+    .benefits ul {
+      padding-left: 20px;
+      color: #ddd;
+      line-height: 2
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: #0d0d0e;
+      border: 1px solid var(--line);
+      padding: 5px;
+      border-radius: 11px;
+      margin-bottom: 22px
+    }
+
+    .tab {
+      flex: 1;
+      color: #aaa;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .tab[aria-selected="true"] {
+      background: #29292c;
+      color: #fff
+    }
+
+    .field {
+      margin-bottom: 15px
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      height: 46px;
+      border: 1px solid #3a3a3e;
+      border-radius: 9px;
+      background: #0c0c0d;
+      color: white;
+      padding: 0 13px;
+      font: inherit
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: 2px solid #f0443880;
+      border-color: var(--red)
+    }
+
+    .fields-two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .submit,
+    .secondary {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      background: var(--red);
+      color: white;
+      font-weight: 800;
+      padding: 13px;
+      cursor: pointer;
+      font-size: 15px
+    }
+
+    .submit:hover {
+      background: #d92e23
+    }
+
+    .fine {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 14px 0 0
+    }
+
+    .notice {
+      display: none;
+      border-radius: 9px;
+      padding: 11px 13px;
+      margin: 0 0 16px;
+      background: #331a19;
+      border: 1px solid #69332f;
+      color: #ffd6d1;
+      font-size: 13px
+    }
+
+    .profile-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 26px
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #3b1715;
+      color: #ffaaa2;
+      font-size: 23px;
+      font-weight: 800
+    }
+
+    .profile-head h2 {
+      margin: 0 0 2px
+    }
+
+    .profile-head p {
+      margin: 0;
+      color: var(--muted)
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 24px
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px
+    }
+
+    .secondary {
+      background: #242427;
+      border: 1px solid #414145
+    }
+
+    .secondary:hover {
+      background: #303034
+    }
+
+    .status {
+      font-size: 13px;
+      color: #a7f3d0;
+      min-height: 20px;
+      margin-top: 10px
+    }
+
+    .progress-section {
+      margin-top: 34px;
+      padding-top: 27px;
+      border-top: 1px solid var(--line)
+    }
+
+    .goal-setup {
+      background: #0d0d0e;
+      border: 1px solid #3a2928;
+      border-radius: 14px;
+      padding: 17px;
+      margin-bottom: 16px
+    }
+
+    .goal-setup h4 {
+      margin: 0 0 5px;
+      font-size: 15px
+    }
+
+    .goal-setup>p {
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 12px
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .goal-actions .submit {
+      flex: 1
+    }
+
+    #editProgressGoal {
+      width: auto;
+      padding: 10px 14px;
+      font-size: 12px
+    }
+
+    .progress-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 14px;
+      margin-bottom: 17px
+    }
+
+    .progress-heading h3 {
+      margin: 0;
+      font-size: 22px
+    }
+
+    .progress-heading p {
+      color: var(--muted);
+      margin: 4px 0 0;
+      font-size: 13px
+    }
+
+    .progress-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 15px
+    }
+
+    .progress-stat {
+      background: #0d0d0e;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 13px
+    }
+
+    .progress-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .progress-stat strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 3px
+    }
+
+    .progress-stat em {
+      display: block;
+      font-style: normal;
+      color: #ffaaa2;
+      font-size: 11px;
+      margin-top: 3px
+    }
+
+    .progress-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(250px, .8fr);
+      gap: 14px;
+      align-items: start
+    }
+
+    .progress-box {
+      background: #0d0d0e;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 16px;
+      min-width: 0
+    }
+
+    .progress-box h4 {
+      margin: 0 0 12px;
+      font-size: 14px
+    }
+
+    #weightChart {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 175px
+    }
+
+    .chart-empty {
+      min-height: 175px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 20px
+    }
+
+    .progress-entry {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid #28282a;
+      align-items: center
+    }
+
+    .progress-entry:last-child {
+      border-bottom: 0
+    }
+
+    .progress-entry strong {
+      font-size: 13px
+    }
+
+    .progress-entry span {
+      color: var(--muted);
+      font-size: 11px
+    }
+
+    .progress-entry .entry-note {
+      grid-column: 1/-1;
+      color: #ccc
+    }
+
+    .delete-entry {
+      border: 1px solid #4a2927;
+      color: #ffaaa2;
+      background: #241211;
+      border-radius: 7px;
+      padding: 6px 8px;
+      cursor: pointer
+    }
+
+    .progress-form {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line)
+    }
+
+    .progress-form .submit {
+      margin-top: 2px
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    @media(max-width:700px) {
+      main {
+        margin-top: 32px
+      }
+
+      .auth-layout {
+        grid-template-columns: 1fr;
+        gap: 8px
+      }
+
+      .benefits {
+        padding: 0
+      }
+
+      .benefits ul {
+        display: none
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr
+      }
+
+      .progress-layout {
+        grid-template-columns: 1fr
+      }
+
+      .actions {
+        flex-direction: column
+      }
+
+      .progress-stats {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .progress-heading {
+        align-items: flex-start;
+        flex-direction: column
+      }
+
+      .goal-actions {
+        align-items: stretch;
+        flex-direction: column
+      }
+
+      #editProgressGoal {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation"><a class="brand" href="index.html">FITNESS <span>46</span></a><a
+        class="back" href="index.html">← Back to Home</a></nav>
+  </header>
+  <main>
+    <p class="eyebrow">Your fitness journey</p>
+    <h1 class="heading">Your profile</h1>
+    <p class="intro">Sign in or create an account to keep your fitness details together.</p>
+    <section id="authPanel" class="card auth-layout" aria-label="Sign in or create account">
+      <div class="benefits">
+        <p class="eyebrow">Fitness 46 members</p>
+        <h2>Make this journey yours.</h2>
+        <p>Your profile will be the home for your fitness goals and personal details.</p>
+        <ul>
+          <li>Keep your profile details in one place</li>
+          <li>Set your fitness goal and activity level</li>
+          <li>Get ready for the upcoming community</li>
+        </ul>
+      </div>
+      <div>
+        <div class="tabs" role="tablist" aria-label="Account action"><button class="tab" id="loginTab" role="tab"
+            aria-selected="true" aria-controls="loginForm">Log in</button><button class="tab" id="signupTab" role="tab"
+            aria-selected="false" aria-controls="signupForm">Create account</button></div>
+        <div id="authNotice" class="notice" role="alert"></div>
+        <form id="loginForm">
+          <div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" name="email"
+              type="email" autocomplete="email" placeholder="you@example.com" required></div>
+          <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" name="password"
+              type="password" autocomplete="current-password" placeholder="Your password" required minlength="6"></div>
+          <button class="submit" type="submit">Log in</button>
+          <p class="fine">Log in with your email and password.</p>
+        </form>
+        <form id="signupForm" class="hidden">
+          <div class="field"><label for="signupName">Full name</label><input id="signupName" name="name"
+              autocomplete="name" placeholder="Your name" required maxlength="80"></div>
+          <div class="field"><label for="signupEmail">Email address</label><input id="signupEmail" name="email"
+              type="email" autocomplete="email" placeholder="you@example.com" required></div>
+          <div class="field"><label for="signupPassword">Password</label><input id="signupPassword" name="password"
+              type="password" autocomplete="new-password" placeholder="At least 6 characters" required minlength="6">
+          </div><button class="submit" type="submit">Create account</button>
+          <p class="fine">Create your account once, then log in anytime with your email and password.</p>
+        </form>
+      </div>
+    </section>
+    <section id="profilePanel" class="card hidden" aria-label="Your profile details">
+      <div class="profile-head">
+        <div class="avatar" id="avatar">F</div>
+        <div>
+          <p class="eyebrow">Member profile</p>
+          <h2 id="profileTitle">Your profile</h2>
+          <p id="profileEmail"></p>
+        </div>
+      </div>
+      <form id="profileForm">
+        <div class="profile-grid">
+          <div class="field"><label for="name">Full name</label><input id="name" name="name" autocomplete="name"
+              maxlength="80" required></div>
+          <div class="field"><label for="age">Age</label><input id="age" name="age" type="number" min="13" max="120"
+              inputmode="numeric" placeholder="Optional"></div>
+          <div class="field"><label for="goal">Fitness goal</label><select id="goal" name="goal">
+              <option value="">Choose a goal</option>
+              <option>Build muscle</option>
+              <option>Lose weight</option>
+              <option>Improve fitness</option>
+              <option>Build consistency</option>
+            </select></div>
+          <div class="field"><label for="activity">Activity level</label><select id="activity" name="activity">
+              <option value="">Choose your activity level</option>
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select></div>
+        </div>
+        <div class="actions"><button class="submit" type="submit">Save changes</button><button class="secondary"
+            id="logout" type="button">Log out</button></div>
+        <p id="profileStatus" class="status" aria-live="polite"></p>
+      </form>
+      <section class="progress-section" aria-labelledby="progressTitle">
+        <div class="progress-heading">
+          <div>
+            <p class="eyebrow">Your personal log</p>
+            <h3 id="progressTitle">Progress tracker</h3>
+            <p>Only you can see your measurements and history.</p>
+          </div><button id="editProgressGoal" class="secondary hidden" type="button">Edit goal & activity</button>
+        </div>
+        <form id="goalSetupForm" class="goal-setup">
+          <h4 id="goalSetupTitle">Set your starting point</h4>
+          <p id="goalSetupIntro">Tell us your starting weight, goal and usual activity. We’ll compare future check-ins
+            with this baseline.</p>
+          <div class="profile-grid">
+            <div class="field"><label for="progressStartDate">Joining / start date</label><input id="progressStartDate"
+                name="started_on" type="date" required></div>
+            <div class="field"><label for="startingWeight">Starting weight (kg)</label><input id="startingWeight"
+                name="start_weight_kg" type="number" min="20" max="400" step="0.1" placeholder="e.g. 70.5" required>
+            </div>
+            <div class="field"><label for="progressGoal">Your goal</label><select id="progressGoal" name="progress_goal"
+                required>
+                <option value="">Choose your goal</option>
+                <option value="loss">Lose weight</option>
+                <option value="maintain">Maintain weight</option>
+                <option value="gain">Gain weight</option>
+              </select></div>
+            <div class="field" id="targetWeightField"><label for="targetWeight">Target weight (kg)</label><input
+                id="targetWeight" name="target_weight_kg" type="number" min="20" max="400" step="0.1"
+                placeholder="Your goal weight"></div>
+            <div class="field full"><label for="progressActivity">Usual activity level</label><select
+                id="progressActivity" name="progress_activity" required>
+                <option value="">Choose your usual activity</option>
+                <option value="sedentary">Mostly sitting; little planned exercise</option>
+                <option value="light">Light exercise 1–3 days/week</option>
+                <option value="moderate">Moderate exercise 3–5 days/week</option>
+                <option value="high">Hard exercise 6–7 days/week</option>
+                <option value="very_high">Very hard training or physical job</option>
+              </select></div>
+          </div>
+          <div class="goal-actions"><button id="saveGoalSetup" class="submit" type="submit">Save my starting
+              point</button></div>
+          <p id="goalSetupStatus" class="status" aria-live="polite"></p>
+        </form>
+        <div id="progressDashboard" class="hidden">
+          <div class="progress-stats" aria-live="polite">
+            <div class="progress-stat"><span>Starting weight</span><strong id="startingWeightDisplay">—</strong><em
+                id="startedOnDisplay"></em></div>
+            <div class="progress-stat"><span>Current weight</span><strong id="latestWeight">—</strong><em
+                id="weightChange">—</em></div>
+            <div class="progress-stat"><span>Progress to goal</span><strong id="goalProgressValue">—</strong><em
+                id="goalProgressLabel"></em></div>
+          </div>
+          <div class="progress-layout">
+            <div class="progress-box">
+              <h4>Weight trend</h4>
+              <div id="chartWrap" class="chart-empty">Add your first check-in to start your progress chart.</div><svg
+                id="weightChart" class="hidden" viewBox="0 0 640 240" role="img"
+                aria-label="Your weight trend chart"></svg>
+            </div>
+            <div class="progress-box">
+              <h4>Recent check-ins</h4>
+              <div id="progressHistory">
+                <p class="fine">Your saved entries will appear here.</p>
+              </div>
+            </div>
+          </div>
+          <form id="progressForm" class="progress-form">
+            <div class="profile-grid">
+              <div class="field"><label for="progressDate">Check-in date</label><input id="progressDate"
+                  name="logged_on" type="date" required></div>
+              <div class="field"><label for="progressWeight">Weight (kg)</label><input id="progressWeight"
+                  name="weight_kg" type="number" min="20" max="400" step="0.1" placeholder="e.g. 70.5" required></div>
+              <div class="field full"><label for="progressNote">Note <span
+                    style="font-weight:400;color:var(--muted)">optional</span></label><input id="progressNote"
+                  name="note" maxlength="240" placeholder="Energy, training, or how you feel"></div>
+            </div>
+            <button id="saveProgress" class="submit" type="submit">Save progress check-in</button>
+            <p id="progressStatus" class="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script>
+    // Publishable keys are safe in browser code. Never put a service-role key here.
+    const SUPABASE_URL = 'https://ardlmzqewsbhixkxekuo.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_QAWj7P2JoDJntCoLK_8tEA_lebiM45H';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    const authPanel = document.getElementById('authPanel');
+    const profilePanel = document.getElementById('profilePanel');
+    const authNotice = document.getElementById('authNotice');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    function setTab(mode) {
+      const login = mode === 'login';
+      document.getElementById('loginTab').setAttribute('aria-selected', String(login));
+      document.getElementById('signupTab').setAttribute('aria-selected', String(!login));
+      loginForm.classList.toggle('hidden', !login); signupForm.classList.toggle('hidden', login);
+      document.querySelector('.tabs').classList.remove('hidden');
+      authNotice.style.display = 'none';
+    }
+    document.getElementById('loginTab').addEventListener('click', () => setTab('login'));
+    document.getElementById('signupTab').addEventListener('click', () => setTab('signup'));
+    function showProfile(profile, email) {
+      authPanel.classList.add('hidden'); profilePanel.classList.remove('hidden');
+      document.getElementById('profileTitle').textContent = profile.full_name || 'Your profile';
+      document.getElementById('profileEmail').textContent = email || '';
+      document.getElementById('avatar').textContent = (profile.full_name || 'F').trim().charAt(0).toUpperCase();
+      document.getElementById('name').value = profile.full_name || '';
+      document.getElementById('age').value = profile.age || '';
+      document.getElementById('goal').value = profile.fitness_goal || '';
+      document.getElementById('activity').value = profile.activity_level || '';
+    }
+    function showAuth() { profilePanel.classList.add('hidden'); authPanel.classList.remove('hidden'); document.querySelector('.tabs').classList.remove('hidden'); loginForm.classList.remove('hidden'); signupForm.classList.add('hidden') }
+    function showNotice(message) { authNotice.textContent = message; authNotice.style.display = 'block' }
+    function setBusy(form, busy, label) { const button = form.querySelector('button[type="submit"]'); button.disabled = busy; button.textContent = busy ? 'Please wait…' : label }
+    function authErrorMessage(error) {
+      const message = error?.message || 'Please try again.';
+      if (/failed to fetch|fetch failed|network error|load failed/i.test(message)) return 'Could not connect to the Fitness 46 login server. Check your internet connection. If your internet is working, open the Supabase project dashboard and check whether the project is paused; resume it if needed.';
+      return message;
+    }
+    async function loadProfile(user) {
+      const { data, error } = await supabaseClient.from('profiles').select('full_name,age,fitness_goal,activity_level').eq('id', user.id).maybeSingle();
+      if (error) { showAuth(); showNotice('Could not load your profile. Please run the Supabase database setup SQL and try again.'); return }
+      showProfile(data || { full_name: user.user_metadata?.full_name || '' }, user.email);
+      await loadProgress(user);
+    }
+    const progressForm = document.getElementById('progressForm');
+    const goalSetupForm = document.getElementById('goalSetupForm');
+    const progressStatus = document.getElementById('progressStatus');
+    const goalSetupStatus = document.getElementById('goalSetupStatus');
+    const progressHistory = document.getElementById('progressHistory');
+    let activeProgressSettings = null;
+    function localDateString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+    function setProgressDateToday() { document.getElementById('progressDate').value = localDateString() }
+    document.getElementById('progressStartDate').value = localDateString();
+    document.getElementById('progressStartDate').max = localDateString();
+    setProgressDateToday();
+    const goalSelect = document.getElementById('progressGoal');
+    const targetField = document.getElementById('targetWeightField');
+    const targetInput = document.getElementById('targetWeight');
+    function syncTargetWeightField() {
+      const maintain = goalSelect.value === 'maintain';
+      targetField.classList.toggle('hidden', maintain);
+      targetInput.required = !maintain;
+    }
+    goalSelect.addEventListener('change', syncTargetWeightField);
+    function drawWeightChart(entries) {
+      const chart = document.getElementById('weightChart');
+      const wrap = document.getElementById('chartWrap');
+      if (!entries.length) {
+        chart.classList.add('hidden'); wrap.classList.remove('hidden');
+        wrap.textContent = 'Add your first check-in to start your progress chart.'; return;
+      }
+      wrap.classList.add('hidden'); chart.classList.remove('hidden');
+      const weights = entries.map(entry => Number(entry.weight_kg));
+      if (activeProgressSettings?.target_weight_kg) weights.push(Number(activeProgressSettings.target_weight_kg));
+      if (activeProgressSettings?.start_weight_kg) weights.push(Number(activeProgressSettings.start_weight_kg));
+      let min = Math.min(...weights), max = Math.max(...weights);
+      if (max - min < 0.5) { min -= 0.5; max += 0.5 } else { const pad = (max - min) * 0.18; min -= pad; max += pad }
+      const left = 48, right = 615, top = 22, bottom = 185;
+      const x = index => entries.length === 1 ? (left + right) / 2 : left + index * (right - left) / (entries.length - 1);
+      const y = weight => bottom - (weight - min) / (max - min) * (bottom - top);
+      const grid = Array.from({ length: 4 }, (_, i) => {
+        const value = max - i * (max - min) / 3, yy = top + i * (bottom - top) / 3;
+        return `<line x1="${left}" y1="${yy}" x2="${right}" y2="${yy}" stroke="#303034"/><text x="${left - 8}" y="${yy + 4}" text-anchor="end" fill="#aaa" font-size="11">${value.toFixed(1)}</text>`;
+      }).join('');
+      const points = entries.map((entry, index) => `${x(index)},${y(Number(entry.weight_kg))}`).join(' ');
+      const dots = entries.map((entry, index) => `<circle cx="${x(index)}" cy="${y(Number(entry.weight_kg))}" r="4" fill="#f04438" stroke="#ffd1cc" stroke-width="1"><title>${entry.logged_on}: ${Number(entry.weight_kg).toFixed(1)} kg</title></circle>`).join('');
+      const firstDate = entries[0].logged_on, lastDate = entries[entries.length - 1].logged_on;
+      const goalWeight = Number(activeProgressSettings?.target_weight_kg || activeProgressSettings?.start_weight_kg);
+      const goalLine = Number.isFinite(goalWeight) ? `<line x1="${left}" y1="${y(goalWeight)}" x2="${right}" y2="${y(goalWeight)}" stroke="#9be4ae" stroke-width="1.5" stroke-dasharray="6 5"/><text x="${right - 4}" y="${y(goalWeight) - 5}" text-anchor="end" fill="#9be4ae" font-size="10">${activeProgressSettings.progress_goal === 'maintain' ? 'Stay near' : 'Target'} · ${goalWeight.toFixed(1)} kg</text>` : '';
+      chart.innerHTML = `<g font-family="Arial,sans-serif">${grid}${goalLine}<polyline points="${points}" fill="none" stroke="#f04438" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots}<text x="${left}" y="218" fill="#aaa" font-size="11">${firstDate}</text><text x="${right}" y="218" text-anchor="end" fill="#aaa" font-size="11">${lastDate}</text><text x="10" y="15" fill="#aaa" font-size="10">kg</text></g>`;
+    }
+    function renderProgressHistory(entries) {
+      progressHistory.replaceChildren();
+      if (!entries.length) { const empty = document.createElement('p'); empty.className = 'fine'; empty.textContent = 'Your saved entries will appear here.'; progressHistory.append(empty); return }
+      entries.slice(-8).reverse().forEach(entry => {
+        const row = document.createElement('div'); row.className = 'progress-entry';
+        const info = document.createElement('div');
+        const weight = document.createElement('strong'); weight.textContent = `${Number(entry.weight_kg).toFixed(1)} kg`;
+        const date = document.createElement('span'); date.textContent = ` · ${entry.logged_on}`;
+        info.append(weight, date);
+        if (entry.logged_on !== activeProgressSettings?.progress_started_on) {
+          const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'delete-entry'; remove.textContent = 'Remove'; remove.dataset.progressId = entry.id; remove.setAttribute('aria-label', `Remove check-in from ${entry.logged_on}`);
+          row.append(info, remove);
+        } else row.append(info);
+        if (entry.note) { const details = document.createElement('span'); details.className = 'entry-note'; details.textContent = entry.note; row.append(details) }
+        progressHistory.append(row);
+      });
+    }
+    async function loadProgress(user) {
+      activeProgressSettings = null;
+      goalSetupForm.reset();
+      document.getElementById('progressStartDate').value = localDateString();
+      document.getElementById('progressStartDate').max = localDateString();
+      document.getElementById('startingWeight').readOnly = false;
+      document.getElementById('progressStartDate').readOnly = false;
+      syncTargetWeightField();
+      document.getElementById('progressDashboard').classList.add('hidden');
+      goalSetupForm.classList.add('hidden');
+      document.getElementById('editProgressGoal').classList.add('hidden');
+      const settingsResult = await supabaseClient.from('profiles').select('progress_goal,start_weight_kg,target_weight_kg,progress_activity,progress_started_on').eq('id', user.id).maybeSingle();
+      if (settingsResult.error) {
+        goalSetupForm.classList.remove('hidden'); document.getElementById('progressDashboard').classList.add('hidden');
+        goalSetupStatus.textContent = 'Database setup is missing. Run the updated supabase-progress.sql in Supabase SQL Editor, then refresh this page.';
+        return;
+      }
+      const settings = settingsResult.data || {};
+      const configured = Boolean(settings.progress_goal && settings.start_weight_kg && settings.progress_activity && settings.progress_started_on);
+      activeProgressSettings = configured ? settings : null;
+      document.getElementById('progressDashboard').classList.toggle('hidden', !configured);
+      goalSetupForm.classList.toggle('hidden', configured);
+      document.getElementById('editProgressGoal').classList.toggle('hidden', !configured);
+      if (!configured) {
+        goalSetupStatus.textContent = '';
+        document.getElementById('progressStartDate').value = localDateString();
+        document.getElementById('progressStartDate').max = localDateString();
+        document.getElementById('startingWeight').readOnly = false;
+        document.getElementById('progressStartDate').readOnly = false;
+        document.getElementById('goalSetupTitle').textContent = 'Set your starting point';
+        document.getElementById('goalSetupIntro').textContent = 'Tell us your starting weight, goal and usual activity. We’ll compare future check-ins with this baseline.';
+        document.getElementById('saveGoalSetup').textContent = 'Save my starting point';
+        return;
+      }
+      document.getElementById('startingWeight').value = settings.start_weight_kg;
+      document.getElementById('startingWeight').readOnly = true;
+      document.getElementById('progressStartDate').value = settings.progress_started_on;
+      document.getElementById('progressStartDate').readOnly = true;
+      document.getElementById('progressDate').min = settings.progress_started_on;
+      document.getElementById('progressDate').max = localDateString();
+      goalSelect.value = settings.progress_goal;
+      targetInput.value = settings.target_weight_kg || '';
+      document.getElementById('progressActivity').value = settings.progress_activity;
+      syncTargetWeightField();
+      document.getElementById('startingWeightDisplay').textContent = `${Number(settings.start_weight_kg).toFixed(1)} kg`;
+      document.getElementById('startedOnDisplay').textContent = `Started ${settings.progress_started_on}`;
+      document.getElementById('goalProgressLabel').textContent = `${settings.progress_goal === 'loss' ? 'Lose' : settings.progress_goal === 'gain' ? 'Gain' : 'Maintain'} · ${document.getElementById('progressActivity').selectedOptions[0].textContent}`;
+      const { data, error } = await supabaseClient.from('progress_entries').select('id,weight_kg,note,logged_on').eq('user_id', user.id).order('logged_on', { ascending: false }).limit(200);
+      if (error) { progressStatus.textContent = 'Progress history table is missing. Run the updated supabase-progress.sql in Supabase SQL Editor, then refresh.'; return }
+      const entries = (data || []).reverse();
+      if (!entries.some(entry => entry.logged_on === settings.progress_started_on)) {
+        const { data: baselineEntry, error: baselineError } = await supabaseClient.from('progress_entries').upsert({ user_id: user.id, weight_kg: Number(settings.start_weight_kg), note: 'Starting weight', logged_on: settings.progress_started_on }, { onConflict: 'user_id,logged_on' }).select('id,weight_kg,note,logged_on').single();
+        if (baselineError) { progressStatus.textContent = 'Could not save the starting weight. Check the Supabase progress SQL setup and refresh.'; return }
+        entries.push(baselineEntry);
+        entries.sort((a, b) => a.logged_on.localeCompare(b.logged_on));
+      }
+      renderProgressHistory(entries); drawWeightChart(entries);
+      if (!entries.length) {
+        document.getElementById('latestWeight').textContent = '—';
+        document.getElementById('weightChange').textContent = '—';
+        document.getElementById('goalProgressValue').textContent = 'No entries'; return;
+      }
+      const baseline = Number(settings.start_weight_kg), latest = Number(entries[entries.length - 1].weight_kg), change = latest - baseline;
+      document.getElementById('latestWeight').textContent = `${latest.toFixed(1)} kg`;
+      document.getElementById('weightChange').textContent = `${change > 0 ? '+' : ''}${change.toFixed(1)} kg since start`;
+      if (settings.progress_goal === 'maintain') {
+        document.getElementById('goalProgressValue').textContent = Math.abs(change) <= 1 ? 'On track' : `${change > 0 ? '+' : ''}${change.toFixed(1)} kg`;
+        document.getElementById('goalProgressLabel').textContent = 'Aim to stay within about 1 kg of starting weight';
+      } else {
+        const target = Number(settings.target_weight_kg), planned = Math.abs(baseline - target);
+        const moved = settings.progress_goal === 'loss' ? baseline - latest : latest - baseline;
+        const remaining = settings.progress_goal === 'loss' ? latest - target : target - latest;
+        const percent = planned > 0 ? Math.max(0, Math.min(100, moved / planned * 100)) : 0;
+        document.getElementById('goalProgressValue').textContent = `${percent.toFixed(0)}%`;
+        document.getElementById('goalProgressLabel').textContent = remaining > 0 ? `${Math.max(0, moved).toFixed(1)} kg moved · ${remaining.toFixed(1)} kg to target` : 'Target reached';
+      }
+      progressStatus.textContent = '';
+    }
+    document.getElementById('editProgressGoal').addEventListener('click', () => {
+      document.getElementById('goalSetupTitle').textContent = 'Update your goal';
+      document.getElementById('goalSetupIntro').textContent = 'Your original joining date and starting weight stay fixed. Update your goal, target weight or activity as needed.';
+      document.getElementById('saveGoalSetup').textContent = 'Update goal & activity';
+      goalSetupStatus.textContent = ''; goalSetupForm.classList.remove('hidden');
+    });
+    goalSetupForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = document.getElementById('saveGoalSetup'); button.disabled = true; button.textContent = 'Saving…'; goalSetupStatus.textContent = '';
+      try {
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session?.user) throw new Error('Please log in again to set your progress goal.');
+        const form = new FormData(goalSetupForm), goal = String(form.get('progress_goal'));
+        const isInitial = !activeProgressSettings;
+        const baseline = isInitial ? Number(form.get('start_weight_kg')) : Number(activeProgressSettings.start_weight_kg);
+        const startedOn = isInitial ? String(form.get('started_on')) : activeProgressSettings.progress_started_on;
+        const rawTarget = String(form.get('target_weight_kg') || '').trim();
+        const target = goal === 'maintain' ? baseline : Number(rawTarget);
+        if (goal !== 'maintain' && (!rawTarget || (goal === 'loss' && target >= baseline) || (goal === 'gain' && target <= baseline))) throw new Error(goal === 'loss' ? 'For weight loss, target weight must be lower than your starting weight.' : 'For weight gain, target weight must be higher than your starting weight.');
+        const updates = { progress_goal: goal, start_weight_kg: baseline, target_weight_kg: target, progress_activity: String(form.get('progress_activity')), progress_started_on: startedOn, updated_at: new Date().toISOString() };
+        const { error: saveError } = await supabaseClient.from('profiles').update(updates).eq('id', session.user.id);
+        if (saveError) throw saveError;
+        const { error: baselineError } = await supabaseClient.from('progress_entries').upsert({ user_id: session.user.id, weight_kg: baseline, note: 'Starting weight', logged_on: startedOn }, { onConflict: 'user_id,logged_on' });
+        if (baselineError) throw baselineError;
+        await loadProgress(session.user);
+        progressStatus.textContent = isInitial ? 'Starting point saved. Add a check-in whenever you want to update your progress.' : 'Goal and activity updated.';
+      } catch (error) {
+        goalSetupStatus.textContent = /schema cache|could not find the table|does not exist|column .* does not exist/i.test(error.message || '') ? 'Supabase setup is missing. Run the updated supabase-progress.sql in SQL Editor, wait a few seconds, then refresh this page.' : (error.message || 'Could not save your progress goal. Please try again.');
+      } finally {
+        button.disabled = false;
+        button.textContent = activeProgressSettings ? 'Update goal & activity' : 'Save my starting point';
+      }
+    });
+    progressForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = document.getElementById('saveProgress'); button.disabled = true; button.textContent = 'Saving check-in…'; progressStatus.textContent = '';
+      try {
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session?.user) throw new Error('Your session expired. Log in again to save progress.');
+        const form = new FormData(progressForm);
+        const entry = { user_id: session.user.id, weight_kg: Number(form.get('weight_kg')), note: String(form.get('note') || '').trim(), logged_on: String(form.get('logged_on')) };
+        const { error } = await supabaseClient.from('progress_entries').upsert(entry, { onConflict: 'user_id,logged_on' });
+        if (error) throw error;
+        progressForm.reset(); setProgressDateToday(); progressStatus.textContent = 'Progress check-in saved to your account.'; await loadProgress(session.user);
+      } catch (error) { progressStatus.textContent = error.message || 'Could not save your check-in. Please try again.' }
+      finally { button.disabled = false; button.textContent = 'Save progress check-in' }
+    });
+    progressHistory.addEventListener('click', async event => {
+      const button = event.target.closest('[data-progress-id]'); if (!button) return;
+      button.disabled = true; progressStatus.textContent = 'Removing check-in…';
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session?.user) throw new Error('Please log in again to manage your check-ins.');
+        const { error } = await supabaseClient.from('progress_entries').delete().eq('id', button.dataset.progressId).eq('user_id', session.user.id);
+        if (error) throw error;
+        await loadProgress(session.user); progressStatus.textContent = 'Check-in removed.';
+      } catch (error) { progressStatus.textContent = error.message || 'Could not remove this check-in.'; button.disabled = false }
+    });
+    loginForm.addEventListener('submit', async event => {
+      event.preventDefault(); authNotice.style.display = 'none'; setBusy(loginForm, true, 'Log in');
+      try {
+        const form = new FormData(loginForm);
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: String(form.get('email') || '').trim(), password: String(form.get('password') || '') });
+        if (error) { showNotice(authErrorMessage(error)); return }
+        await loadProfile(data.user);
+      } catch (error) { showNotice(authErrorMessage(error)) }
+      finally { setBusy(loginForm, false, 'Log in') }
+    });
+    signupForm.addEventListener('submit', async event => {
+      event.preventDefault(); authNotice.style.display = 'none'; setBusy(signupForm, true, 'Create account');
+      try {
+        const form = new FormData(signupForm);
+        const { data, error } = await supabaseClient.auth.signUp({ email: String(form.get('email') || '').trim(), password: String(form.get('password') || ''), options: { data: { full_name: String(form.get('name') || '').trim() } } });
+        if (error) { showNotice(authErrorMessage(error)); return }
+        if (data.session) {
+          const { error: profileError } = await supabaseClient.from('profiles').upsert({ id: data.user.id, full_name: String(form.get('name') || '').trim() }, { onConflict: 'id' });
+          if (profileError) { showNotice('Account created, but your profile could not be initialized. Log in and try again.'); return }
+          await loadProfile(data.user); return;
+        }
+        showNotice('Supabase is still requiring email confirmation. Turn off “Confirm email” in Authentication → Sign In / Providers → Email in your Supabase project, then create the account again.');
+      } catch (error) { showNotice(authErrorMessage(error)) }
+      finally { setBusy(signupForm, false, 'Create account') }
+    });
+    document.getElementById('profileForm').addEventListener('submit', async event => {
+      event.preventDefault(); const formElement = event.currentTarget, status = document.getElementById('profileStatus'), button = formElement.querySelector('button[type="submit"]');
+      status.textContent = 'Saving…'; button.disabled = true;
+      try {
+        const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+        if (sessionError) throw sessionError;
+        const user = session?.user;
+        if (!user) { showAuth(); showNotice('Your session expired. Please log in again, then save your profile.'); return }
+        const form = new FormData(formElement), rawAge = String(form.get('age') || '');
+        const profile = { id: user.id, full_name: String(form.get('name') || '').trim(), age: rawAge ? Number(rawAge) : null, fitness_goal: String(form.get('goal') || ''), activity_level: String(form.get('activity') || ''), updated_at: new Date().toISOString() };
+        const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 15000);
+        let result;
+        try { result = await supabaseClient.from('profiles').upsert(profile, { onConflict: 'id' }).select('full_name,age,fitness_goal,activity_level').single().abortSignal(controller.signal) }
+        finally { clearTimeout(timeout) }
+        if (result.error) throw result.error;
+        showProfile(result.data, user.email); status.textContent = 'Profile saved to your account.';
+      } catch (error) {
+        status.textContent = error.name === 'AbortError' ? 'Save timed out. Check your internet connection and try again.' : 'Could not save profile: ' + (error.message || 'Please try again.');
+      } finally { button.disabled = false }
+    });
+    document.getElementById('logout').addEventListener('click', async () => {
+      const { error } = await supabaseClient.auth.signOut(); if (error) { document.getElementById('profileStatus').textContent = error.message; return }
+      showAuth(); setTab('login'); loginForm.reset();
+    });
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session) showAuth();
+      else if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') loadProfile(session.user);
+    });
+  </script>
+</body>
+
+</html>

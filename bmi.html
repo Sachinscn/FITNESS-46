@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator | Fitness 46</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(90deg, #ff3d00, #ff0000);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* MAIN */
+        .main {
+            background: #f8fafc;
+            padding: 60px 20px;
+            min-height: 100vh;
+        }
+
+        /* GRID */
+        .grid {
+            max-width: 1000px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* FORM */
+        .card h2 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ff3333;
+        }
+
+        /* RESULT */
+        .result {
+            margin-top: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* INFO BOX */
+        .info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #6b7280;
+            font-size: 15px;
+        }
+
+        /* CATEGORIES */
+        .categories {
+            max-width: 1000px;
+            margin: 80px auto 0;
+            text-align: center;
+        }
+
+        .categories h2 {
+            margin-bottom: 10px;
+        }
+
+        .categories p {
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+
+        .cat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .cat {
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .under {
+            background: #eff6ff;
+            border: 1px solid #60a5fa;
+        }
+
+        .normal {
+            background: #ecfdf5;
+            border: 1px solid #22c55e;
+        }
+
+        .over {
+            background: #fffbeb;
+            border: 1px solid #facc15;
+        }
+
+        .obese {
+            background: #fef2f2;
+            border: 1px solid #ef4444;
+        }
+
+        /* BACK */
+        .back {
+            display: inline-block;
+            margin: 20px;
+            text-decoration: none;
+            color: black;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Menu Icon */
+        .menu-icon {
+            display: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Mobile Menu Box */
+        .mobile-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            min-width: 200px;
+            z-index: 999;
+        }
+
+        .mobile-menu a {
+            padding: 14px 16px;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid #222;
+            font-size: 14px;
+        }
+
+        .mobile-menu a:hover {
+            background: #111;
+            color: red;
+        }
+
+        /* Mobile View */
+        @media(max-width:768px) {
+            nav ul {
+                display: none;
+            }
+
+            .menu-icon {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <a href="index.html" class="back">← Back to Home</a>
+
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>BMI CALCULATOR</h1>
+        <div class="menu-icon" onclick="toggleMenu()">⋮</div>
+
+        <p>
+            Calculate your Body Mass Index and get personalized
+            recommendations for your fitness journey
+        </p>
+    </div>
+
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="grid">
+
+            <!-- LEFT -->
+            <div class="card">
+                <h2>Calculate Your BMI</h2>
+
+                <label>Height (cm)</label>
+                <input type="number" id="height" placeholder="e.g. 175">
+
+                <label>Weight (kg)</label>
+                <input type="number" id="weight" placeholder="e.g. 70">
+
+                <button class="btn" onclick="calculateBMI()">Calculate BMI</button>
+
+                <div class="result" id="result"></div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="card info">
+                Ready to Calculate?<br><br>
+                Enter your height and weight to get your<br>
+                BMI result and personalized recommendations.
+            </div>
+
+        </div>
+
+        <!-- CATEGORIES -->
+        <div class="categories">
+            <h2>BMI CATEGORIES</h2>
+            <p>Understanding BMI ranges and what they mean for your health</p>
+
+            <div class="cat-grid">
+                <div class="cat under">Underweight<br>Below 18.5</div>
+                <div class="cat normal">Normal<br>18.5 – 24.9</div>
+                <div class="cat over">Overweight<br>25 – 29.9</div>
+                <div class="cat obese">Obese<br>30.0+</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function calculateBMI() {
+            const w = document.getElementById("weight").value;
+            const h = document.getElementById("height").value;
+            const r = document.getElementById("result");
+
+            if (!w || !h || w <= 0 || h <= 0) {
+                r.innerHTML = "<span style='color:red'>Please enter valid values.</span>";
+                return;
+            }
+
+            const bmi = (w / ((h / 100) ** 2)).toFixed(2);
+            let cat = "", color = "";
+
+            if (bmi < 18.5) { cat = "Underweight"; color = "#3b82f6"; }
+            else if (bmi < 25) { cat = "Normal"; color = "#22c55e"; }
+            else if (bmi < 30) { cat = "Overweight"; color = "#facc15"; }
+            else { cat = "Obese"; color = "#ef4444"; }
+
+            r.innerHTML = `Your BMI is <b>${bmi}</b><br>
+    Category: <span style="color:${color};font-weight:bold">${cat}</span>`;
+        }
+    </script>
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.style.display =
+                menu.style.display === "flex" ? "none" : "flex";
+        }
+    </script>
+
+
+</body>
+
+</html>
